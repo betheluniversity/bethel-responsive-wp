@@ -1,2 +1,18 @@
+<<<<<<< HEAD
 vendor
 wp-content
+=======
+*.log
+.htaccess
+sitemap.xml
+sitemap.xml.gz
+wp-config.php
+wp-content/advanced-cache.php
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/uploads/
+wp-content/wp-cache-config.php
+>>>>>>> 167bdcead31d106a12d3184bf0f1bec2003e939b
