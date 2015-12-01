@@ -1,0 +1,60 @@
+<div class="site__navigation" id="siteNav">
+
+    <a class="btn  btn-yellow  close-btn" id="nav-close-btn" href="#top">x Close</a>
+
+    <h1 class="site__navigation__title">{{ site.title }}</h1>
+
+    <ul class="accordion-list  accordion-list--open  first-level  margins-off">
+        <li class="accordion-list__item">
+            <button class="accordion-list__button" href="#"> </button>
+            {% if current_url == site.url or current_url == site.url ~ '/' %}
+                <a class="accordion-list__link accordion-list__link--active" href="{{ site.url }}">Home</a>
+            {% else %}
+                <a class="accordion-list__link" href="{{ site.url }}">Home</a>
+            {% endif %}
+        </li>
+        {% for item in bethel_sidebar_menu.get_items %}
+            {% set list_item_classes = "accordion-list__item " %}
+            {% set link_classes = "accordion-list__link " %}
+            {% set unordered_list_class = "accordion-list" %}
+            {% set button_text = "+" %}
+
+            {% if item.get_link in current_url %}
+                {% set list_item_classes = list_item_classes ~ "accordion--active" %}
+                {% set link_classes = link_classes ~ "accordion-list__link--active" %}
+            {% endif %}
+            <li class="{{ list_item_classes }} {{item.classes | join(' ')}}">
+                {% if item.get_children %}
+                    {# we have to check here to see if we're on a page in this subnav #}
+                    {% for child in item.get_children %}
+                        {% if child.get_link in current_url %}
+                            {% set prev_li_class = "accordion--active" %}
+                            {% set unordered_list_class = unordered_list_class ~ "accordion-list--open" %}
+                            {% set button_text = "-" %}
+                        {% endif %}
+                    {% endfor %}
+                    <button class="accordion-list__button" href="#">{{ button_text }}</button>
+                {% else %}
+                    <button class="accordion-list__button" href="#"> </button>
+                {% endif %}
+                <a class="{{ link_classes }}" href="{{item.get_link}}">{{item.title}}</a>
+            </li>
+            {% if item.get_children %}
+                <ul class="{{ unordered_list_class }}">
+                    {% for child in item.get_children %}
+                        {% set list_item_classes = "accordion-list__item " %}
+                        {% set link_classes = "accordion-list__link " %}
+                        {% if child.get_link in current_url %}
+                            {% set list_item_classes = list_item_classes ~ "accordion--active" %}
+                            {% set link_classes = link_classes ~ "accordion-list__link--active" %}
+                        {% endif %}
+                        <li class="{{ list_item_classes }}">
+                            <button class="accordion-list__button" href="#"> </button>
+                            <a class="{{ link_classes }}" href="{{child.get_link}}">{{child.title}}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

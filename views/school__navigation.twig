@@ -1,0 +1,25 @@
+<div class="school__navigation">
+    <h1 class="school__navigation__head">{{ site.name }}</h1>
+    {% if bethel_header_menu.get_items %}
+    <ul>
+        {% for item in bethel_header_menu.get_items %}
+            {% set link_classes = "nav-link" %}
+            {% if current_url == item.get_link %}
+                {% set link_classes = link_classes ~ " active" %}
+            {% endif %}
+            <li class="nav-item {{item.classes | join(' ')}}">
+                <a class="{{ link_classes }}" href="{{item.get_link}}">{{item.title}}</a>
+                {% if item.get_children %}
+                    <ul class="nav nav-drop">
+                        {% for child in item.get_children %}
+                            <li class="nav-drop-item">
+                                <a class="nav-link" href="{{child.get_link}}">{{child.title}}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>

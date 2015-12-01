@@ -1,0 +1,169 @@
+#import('/_cascade/formats/one/render-block-macro')
+#import('/_cascade/formats/one/flex-layout-block')
+#import('/_cascade/templates/responsive/partials/global__breadcrumb')
+#import('/_cascade/formats/macros')
+
+
+#* -----------------------------------------------------------------------------
+
+This format parses:
+- show/hide breadcrumb
+- show/hide site title button
+- show/hide page title
+- show/hide site navigation
+- Is the data definition flex? If so, does it have fixed and/or full width
+content?
+
+## -------------------------------------------------------------------------- *#
+
+#set ( $page = $currentPage )
+#set ( $ddp = $page.dataDefinitionPath)
+#set ( $hidePageTitle = $page.metadata.getDynamicField("hide-title").value)
+#set ( $hideBreadcrumb = $page.metadata.getDynamicField("hide-breadcrumb").value)
+
+
+##----Show image bank?----
+#findFirstSetupBlock($page.parentFolder)
+#set( $is_homepage = ($page.parentFolder.identifier.id == $setupBlock.parentFolder.identifier.id) && $page.name == 'index')
+#set( $image_location = $setupBlock.getStructuredDataNode('image-location').textValue )
+
+#if($image_location == 'Full site' || ($image_location == 'Homepage only' && $is_homepage))
+#set( $show_bank = true)
+#else
+#set( $show_bank = false)
+#end
+
+## Because the breadcrumb and site title button share a div, and we don't want
+## the html the show if both are hidden, we do a double test before any html is
+## added, then test again inside the html for each element
+
+## Some metadata sets don't have the option to hide the breadcrumb, so we test for null
+## #if ( $hideSiteNav == 'Do not hide' || $hideBreadcrumb == 'Do not hide' || !$hideBreadcrumb)
+##     <div class="inner">
+    ##         <div class="site__title">
+        ##             #if ( $hideSiteNav == 'Do not hide')
+        ##                 <p class="site__title__button" id="js-site__title__button"><a href="#siteNav">☰ Menu</a></p>
+        ##             #end
+
+        ##             #if ($hideBreadcrumb == 'Do not hide' || !$hideBreadcrumb)
+        ##                 <p class="breadcrumb">#makeCrumb($currentPage)</p>
+        ##             #end
+        ##         </div>
+    ##     </div>
+## #end
+
+#set ( $hideSiteNavPage = $page.metadata.getDynamicField("hide-site-nav").value)
+#set ( $hideSiteNavSetupBlock = $setupBlock.getStructuredDataNode("site-navigation").textValue )
+
+#if ( $hideSiteNavSetupBlock == "Show")
+#if ( $hideSiteNavPage == "Do not hide" || !$hideSiteNavPage )
+<p class="site__title__button" id="js-site__title__button"><a href="#siteNav">☰ In This Section</a></p>
+#end
+#elseif ($hideSiteNavSetupBlock == "Hide" && $hideSiteNavPage == "Do not hide" )
+<p class="site__title__button" id="js-site__title__button"><a href="#siteNav">☰ In This Section</a></p>
+#end
+
+
+## This section tests for the Flex data defnition. Because the Flex data
+## defnition has some default presets, we need to test each option (image,
+## content block, page chooser and wysiwyg) for actual content. If content is
+## found, a variable is set to 'yes', which is used later to decide which bits
+## of the html to add.
+
+#set ( $fixedFlex = "no" ) ## setting default
+#set ( $fullFlex = "no" ) ## setting default
+
+#if ($ddp == "Flex")
+
+## Testing fixed-width portion for content
+#set ( $withNav = $page.getStructuredDataNode("with-nav") )
+#set ( $navCol = $withNav.getChild("section").getChild("column") )
+#set ( $navImage = $navCol.getChild("image").asset.path)
+#set ( $navContentBlock = $navCol.getChild("content-block").asset.path)
+#set ( $navPageChooser = $navCol.getChild("page-chooser").asset.path)
+#set ( $navWysiwyg = $navCol.getChild("rich-text"))
+
+#if ($navImage || $navContentBlock || $navPageChooser || $navWysiwyg.textValue )
+#set ( $fixedFlex = 'yes' )
+#end
+
+## Test full-width portion for content
+#set ( $fullWidth = $page.getStructuredDataNode("full-width"))
+#set ( $col = $fullWidth.getChild("section").getChild("column") )
+#set ( $wysiwyg = $col.getChild("rich-text"))
+#set ( $image = $col.getChild("image").asset.path)
+#set ( $contentBlock = $col.getChild("content-block").asset.path)
+#set ( $pageChooser = $col.getChild("page-chooser").asset.path)
+
+#if ($image || $contentBlock || $pageChooser || $wysiwyg.textValue )
+#set ( $fullFlex = 'yes' )
+#end
+#end
+
+## If a page tile is visible, or there is content in the fixed part of the Flex
+## data def, or if the data def is anything but Flex, render it. This section
+## contains html that restricts the max-width of the content, and adds off-
+## canvas hooks.
+
+#if ($hidePageTitle == 'Do not hide' || $fixedFlex == 'yes' || $ddp != "Flex" )
+<div class="inner--content">
+    <div class="outer-wrap--site__navigation">
+        <div class="inner-wrap--site__navigation" id="js-inner-wrap--site__navigation">
+
+            ## Some metadata sets don't have the option to hide
+            ## the title, so we test for null
+            #if (!$hidePageTitle || $hidePageTitle == 'Do not hide')
+            <div class="page__title">
+                <h1>$_EscapeTool.xml($page.metadata.title)</h1>
+
+                #if ($hideBreadcrumb == 'Do not hide' || !$hideBreadcrumb)
+                <p class="breadcrumb">#makeCrumb($currentPage, false)</p>
+                #end
+            </div>
+            #end
+
+            #if ( $hideSiteNavSetupBlock == "Show")
+            #if ( $hideSiteNavPage == "Do not hide" || !$hideSiteNavPage)
+            ## #if( $currentPage.path.contains("_testing") )
+            ##     #import('/_cascade/templates/responsive/partials/site__navigation-test')
+            ## #else
+            #import('/_cascade/templates/responsive/partials/site__navigation')
+            ## #end
+            #end
+            #elseif ($hideSiteNavSetupBlock == "Hide" && $hideSiteNavPage == "Do not hide" )
+            ## #if( $currentPage.path.contains("_testing") )
+            ##     #import('/_cascade/templates/responsive/partials/site__navigation-test')
+            ## #else
+            #import('/_cascade/templates/responsive/partials/site__navigation')
+            ## #end
+            #end
+
+            ## Send to Flex format if ddp is Flex, if not, renderBlock
+            #if ($fixedFlex == 'yes')
+            <div class="main">
+                #if($show_bank)
+                #import('/_cascade/templates/responsive/partials/site__image-bank')
+                #end
+                #flex($withNav)
+            </div>
+            #elseif ($ddp != 'Flex')
+            <div class="main">
+                #if($show_bank)
+                #import('/_cascade/templates/responsive/partials/site__image-bank')
+                #end
+                #renderBlockMacro($page)
+            </div>
+            #end
+
+        </div>
+    </div>
+</div>
+#end
+
+## Render if the full width portion of the Flex data def has content. The full-
+## width section is on its own because we do not want the extra html that
+## constrains the max-width and adds the off-canvas bits.
+
+#if ( $fullFlex == 'yes' )
+#flex($fullWidth)
+#end

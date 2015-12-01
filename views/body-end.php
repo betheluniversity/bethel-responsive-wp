@@ -1,0 +1,17 @@
+<system-region name="DEFAULT"><script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script async="" src="https://cdn2.bethel.edu/js/bundle.js" type="text/javascript"></script>
+
+
+    <script>
+        var cb = function() {
+            var l = document.createElement('link'); l.rel = 'stylesheet';
+            l.href = 'https://cloud.typography.com/6664852/692222/css/fonts.css';
+            var h = document.getElementsByTagName('head')[0]; h.parentNode.insertBefore(l, h);
+        };
+        var raf = requestAnimationFrame || mozRequestAnimationFrame ||
+            webkitRequestAnimationFrame || msRequestAnimationFrame;
+        if (raf) raf(cb);
+        else window.addEventListener('load', cb);
+    </script>
+
+    <noscript><link href="https://cdn2.bethel.edu/css/fizz.css" rel="stylesheet"/></noscript></system-region>

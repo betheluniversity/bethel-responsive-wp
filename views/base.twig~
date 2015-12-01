@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {% block head %}
+    <title>
+        {% if wp_title %}
+            {{ wp_title }} | {{ site.name }}  | Bethel University Minnesota
+        {% else %}
+            {{ site.name }} | Bethel University Minnesota
+        {% endif %}
+    </title>
+    {{function('wp_head')}}
+
+    {{ include head.twig }}
+    {{ function("create_bethel_head") }}
+    {% endblock %}
+
+</head>
+<body class="no-js" id="top">
+<script type="text/javascript">document.body.className = document.body.className.replace("no-js","js");</script>
+
+{% block body__start %}
+{{ include 'body-start.twig' }}
+{# function("create_bethel_body_start") #}
+{% endblock %}
+
+{% block metadata_check %}
+{% endblock %}
+
+{% block global__toolbox %}
+    {{ include 'toolbox.twig' }}
+    {# function("create_bethel_toolbox") #}
+{% endblock %}
+
+<div class="inner-wrap--global__navigation" id="js-inner-wrap--global__navigation">
+
+    {% block global__header %}
+        {{ include 'global-header.twig' }}
+        {# function("create_bethel_global_header") #}
+    {% endblock %}
+
+    {% block school__navigation %}
+    {% block header %}
+        {%  include 'school__navigation.twig' %}
+    {% endblock %}
+    {% endblock %}
+
+    {% block main %}
+        <div class="inner--content">
+            <div class="outer-wrap--site__navigation">
+                <div class="inner-wrap--site__navigation {{sidebar_class}}" id="js-inner-wrap--site__navigation">
+
+                    <div class="page__title">
+                        {% block title %}
+                            {% if title %}
+                                <h1>{{title}}</h1>
+                            {% elseif post.title %}
+                                <h1>{{ post.title }}</h1>
+                            {% else %}
+                                <h1>{{ site.title }}</h1>
+                            {% endif %}
+                        {% endblock %}
+
+                        {% block breadcrumb %}
+                            <p class="breadcrumb">
+                                <a href="{{ site.url }}">Home</a>
+                                {% if title %}
+                                    <a href="{{ current_url }}">{{ title }}</a>
+                                {% elseif post.title %}
+                                    <a href="{{ current_url }}">{{ post.title }}</a>
+                               {% endif %}
+                            </p>
+                        {% endblock %}
+                    </div>
+
+                    {% include 'site__navigation.twig' %}
+
+                    <div class="main">
+                        {% block content %}
+                            Sorry, no content
+                        {% endblock %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block site__features %}
+    {% endblock %}
+
+    {% block global__footer %}
+        {{ include 'footer.twig' }}
+        {{ function('create_bethel_footer') }}
+        {{ function('wp_footer') }}
+    {% endblock %}
+</div>
+{% block body__end %}
+    {# include 'body-end.twig' #}
+{% endblock %}
+{% block additional_js %}
+{% endblock %}
+</body>
+</html>

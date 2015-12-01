@@ -1,0 +1,3 @@
+scp ces55739@web2.its.bethel.edu:/var/www/cms.pub/_cascade/templates/responsive/includes/footer/footer.php footer.php
+scp ces55739@web2.its.bethel.edu:/var/www/cms.pub/_cascade/templates/responsive/includes/global-header/global-header.php global-header.php
+scp ces55739@web2.its.bethel.edu:/var/www/cms.pub/code/general-cascade/macros.php macros.php

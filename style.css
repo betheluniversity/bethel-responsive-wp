@@ -1,0 +1,10 @@
+/*
+ * Theme Name: Bethel Responsive
+ * Description: Theme based on Bethel's responsive website
+ * Author: Bethel University
+*/
+
+.news__image--placeholder {
+    text-align:center;
+    opacity: 0.3
+}

@@ -1,0 +1,19 @@
+{% extends "base.twig" %}
+
+{% block content %}
+	{% for post in posts %}
+		{% include ['tease-'~post.post_type~'.twig', 'tease.twig'] %}
+	{% endfor %}
+
+    {% if pagination.prev %}
+        <a class="btn" href="{{pagination.prev.link}}">Newer Posts</a>
+    {% else %}
+        <a class="btn btn-inactive" href="javascript:void(0)">Newer Posts</a>
+    {% endif %}
+
+    {% if pagination.next %}
+        <a style="float:right" class="btn" href="{{pagination.next.link}}">Older Posts</a>
+    {% else %}
+        <a style="float:right" class="btn btn-inactive" href="javascript:void(0)">Older Posts</a>
+    {% endif %}
+{% endblock %}
