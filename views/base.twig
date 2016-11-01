@@ -39,6 +39,12 @@
         {# function("create_bethel_global_header") #}
     {% endblock %}
 
+    {% block school__navigation %}
+        {% block header %}
+            {%  include 'school__navigation.twig' %}
+        {% endblock %}
+    {% endblock %}
+   
     {% block main %}
         <div class="inner--content">
             <div class="outer-wrap--site__navigation">
